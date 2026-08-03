@@ -2,7 +2,6 @@ import streamlit as st
 import joblib
 import pandas as pd
 import random
-import textwrap
 
 # -----------------------------------------------------------------------------
 # Page Configuration
@@ -15,10 +14,11 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# Helper function to render unindented HTML
+# Robust Bulletproof HTML Renderer (Strips ALL leading indentation)
 # -----------------------------------------------------------------------------
 def render_html(html_str):
-    st.markdown(textwrap.dedent(html_str), unsafe_allow_html=True)
+    clean = "\n".join([line.lstrip() for line in html_str.strip().splitlines()])
+    st.markdown(clean, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # Baseline Defaults & Presets
@@ -102,229 +102,142 @@ PRESETS = {
 # -----------------------------------------------------------------------------
 def apply_modern_theme_css():
     render_html("""
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
-        /* HIDE STREAMLIT TOP HEADER, MENU, STATUS WIDGET, AND SIDEBAR */
-        header, [data-testid="stHeader"], #MainMenu, footer, [data-testid="stDecoration"], [data-testid="stStatusWidget"], [data-testid="stSidebar"] {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0px !important;
-        }
-        
-        /* Global Reset & Typography */
-        html, body, [class*="css"] {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: #0F172A;
-        }
-        
-        .stApp {
-            background-color: #F8FAFC;
-        }
-        
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 2rem !important;
-            max-width: 100% !important;
-        }
-        
-        /* Top SaaS Header */
-        .saas-top-bar {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #2563EB 100%);
-            padding: 1.25rem 1.6rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
-            margin-bottom: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .hero-title {
-            font-size: 1.65rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            margin: 0;
-            letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .hero-subtitle {
-            font-size: 0.85rem;
-            color: #94A3B8;
-            margin-top: 0.2rem;
-        }
-        
-        /* Badges */
-        .live-badge {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10B981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 0.3rem 0.8rem;
-            border-radius: 9999px;
-            font-size: 0.775rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #10B981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #10B981;
-        }
-        .meta-badge {
-            background: rgba(37, 99, 235, 0.12);
-            color: #2563EB;
-            border: 1px solid rgba(37, 99, 235, 0.25);
-            padding: 0.25rem 0.7rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        /* Elevated Light Cards */
-        .light-card {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 1.3rem 1.4rem;
-            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
-            margin-bottom: 1.2rem;
-            transition: all 0.25s ease;
-        }
-        .light-card:hover {
-            box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
-            border-color: #CBD5E1;
-        }
-        .section-header {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #2563EB;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+/* HIDE STREAMLIT TOP HEADER, MENU, STATUS WIDGET, AND SIDEBAR */
+header, [data-testid="stHeader"], #MainMenu, footer, [data-testid="stDecoration"], [data-testid="stStatusWidget"], [data-testid="stSidebar"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+}
 
-        /* Prediction Glow Card */
-        .prediction-hero-card {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
-            border-radius: 18px;
-            padding: 1.5rem 1.7rem;
-            border: 2px solid #2563EB;
-            box-shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.15), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
-            margin-bottom: 1.2rem;
-        }
-        .prediction-price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #2563EB;
-            margin: 0.2rem 0;
-            line-height: 1.1;
-        }
+/* Global Reset & Typography */
+html, body, [class*="css"] {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0F172A;
+}
 
-        /* Summary Card Item */
-        .summary-card {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.9rem;
-            transition: all 0.2s ease;
-        }
-        .summary-card:hover {
-            transform: translateY(-2px);
-            border-color: #2563EB;
-            background: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-        }
-        .summary-icon {
-            font-size: 1.3rem;
-            background: rgba(37, 99, 235, 0.1);
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            color: #2563EB;
-        }
-        .summary-title {
-            font-size: 0.725rem;
-            color: #64748B;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-        .summary-value {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #0F172A;
-        }
+.stApp {
+    background-color: #F8FAFC;
+}
 
-        /* Button Styling Overrides */
-        div.stButton > button {
-            background-color: #FFFFFF;
-            color: #1E293B;
-            border: 1px solid #CBD5E1;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-        div.stButton > button:hover {
-            background-color: #2563EB;
-            color: #FFFFFF;
-            border-color: #2563EB;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
-            transform: translateY(-1px);
-        }
-        div.stButton > button[kind="primary"] {
-            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-            color: #FFFFFF;
-            border: none;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-        }
-        div.stButton > button[kind="primary"]:hover {
-            background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-            transform: translateY(-2px);
-        }
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 100% !important;
+}
 
-        /* Custom Labels & Elements */
-        label {
-            color: #334155 !important;
-            font-size: 0.85rem !important;
-            font-weight: 600 !important;
-        }
+/* Top SaaS Header */
+.saas-top-bar {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #2563EB 100%);
+    padding: 1.25rem 1.6rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2);
+    margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.hero-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin: 0;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.hero-subtitle {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin-top: 0.2rem;
+}
 
-        /* Metric Progress Bar */
-        .progress-bar-bg {
-            background-color: #E2E8F0;
-            border-radius: 9999px;
-            height: 8px;
-            width: 100%;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 9999px;
-            transition: width 0.4s ease;
-        }
-    </style>
-    """)
+/* Badges */
+.live-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 0.775rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10B981;
+}
+.meta-badge {
+    background: rgba(37, 99, 235, 0.12);
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Elevated Light Cards */
+.light-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 1.3rem 1.4rem;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    margin-bottom: 1.2rem;
+}
+.section-header {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #2563EB;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.85rem;
+}
+
+/* Button Styling Overrides */
+div.stButton > button {
+    background-color: #FFFFFF;
+    color: #1E293B;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+div.stButton > button:hover {
+    background-color: #2563EB;
+    color: #FFFFFF;
+    border-color: #2563EB;
+    transform: translateY(-1px);
+}
+div.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    border: none;
+}
+div.stButton > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+}
+
+label {
+    color: #334155 !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+}
+</style>
+""")
 
 # -----------------------------------------------------------------------------
 # Asset Loading (Machine Learning Model)
@@ -452,14 +365,14 @@ est_mortgage = (predicted_price * 0.80 * (0.065/12) * ((1 + 0.065/12)**360)) / (
 # -----------------------------------------------------------------------------
 render_html("""
 <div class="saas-top-bar">
-    <div>
-        <div class="hero-title">🏠 House Price Valuation AI</div>
-        <div class="hero-subtitle">Real-time machine learning price predictions & property comparison tool</div>
-    </div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <span class="live-badge"><span class="pulse-dot"></span> Live Random Forest AI</span>
-        <span class="meta-badge">Ames Dataset</span>
-    </div>
+<div>
+<div class="hero-title">🏠 House Price Valuation AI</div>
+<div class="hero-subtitle">Real-time machine learning price predictions & property comparison tool</div>
+</div>
+<div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+<span class="live-badge"><span class="pulse-dot"></span> Live Random Forest AI</span>
+<span class="meta-badge">Ames Dataset</span>
+</div>
 </div>
 """)
 
@@ -516,7 +429,7 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
     with in_col1:
         render_html("""
         <div class="light-card">
-            <div class="section-header">🏗️ Quality & Built Specifications</div>
+        <div class="section-header">🏗️ Quality & Built Specifications</div>
         """)
         
         st.slider("⭐ Overall Quality (1-10)", 1, 10, key="key_OverallQual", help="Rates overall material and finish quality")
@@ -559,205 +472,122 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
         render_html("</div>")
 
     with in_col2:
-        # REAL-TIME LIVE PREDICTION DISPLAY
-        render_html(f"""
-        <div class="prediction-hero-card">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">
-                        💰 Live Estimated Market Price
-                    </div>
-                    <div class="prediction-price">£{predicted_price:,.2f}</div>
-                </div>
-                <span class="live-badge"><span class="pulse-dot"></span> Live Model</span>
-            </div>
+        # REAL-TIME LIVE PREDICTION DISPLAY (Native Streamlit Containers + Metrics)
+        with st.container(border=True):
+            st.subheader("💰 Live Estimated Market Price")
+            st.metric(
+                label="Random Forest Model Prediction",
+                value=f"£{predicted_price:,.2f}",
+                delta=f"£{price_per_sqft:,.2f} / sq ft ({property_grade})"
+            )
             
-            <div style="display: flex; gap: 1rem; margin-top: 0.75rem; font-size: 0.85rem; color: #475569; flex-wrap: wrap;">
-                <span>📐 Price / sq ft: <b style="color: #0F172A;">£{price_per_sqft:,.2f}</b></span>
-                <span>🏷️ Tier: <b style="color: {grade_color};">{property_grade}</b></span>
-            </div>
+            m_col1, m_col2 = st.columns(2)
+            with m_col1:
+                st.caption("Valuation Range (±5%)")
+                st.write(f"**£{lower_estimate:,.0f} – £{upper_estimate:,.0f}**")
+            with m_col2:
+                st.caption("Est. 30-Yr Mortgage (20% Down @ 6.5%)")
+                st.write(f"**~£{est_mortgage:,.0f} / mo**")
+
+        # FEATURE IMPORTANCE & VALUE BREAKDOWN (Native Streamlit Progress Bars)
+        with st.container(border=True):
+            st.subheader("📊 Feature Impact & Relative Drivers")
             
-            <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid #E2E8F0;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.825rem; color: #475569; margin-bottom: 0.4rem;">
-                    <span>Valuation Confidence Interval (±5%)</span>
-                    <b style="color: #2563EB;">£{lower_estimate:,.0f} – £{upper_estimate:,.0f}</b>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.825rem; color: #475569;">
-                    <span>Est. 30-Yr Mortgage (20% Down @ 6.5%)</span>
-                    <b style="color: #059669;">~£{est_mortgage:,.0f} / mo</b>
-                </div>
-            </div>
-        </div>
-        """)
+            qual_pct = min(1.0, (input_values['OverallQual'] / 10.0))
+            area_pct = min(1.0, (input_values['GrLivArea'] / 3500.0))
+            garage_pct = min(1.0, (input_values['GarageCars'] / 4.0))
+            age_pct = min(1.0, max(0.0, (input_values['YearBuilt'] - 1950) / 75.0))
 
-        # FEATURE IMPORTANCE & VALUE BREAKDOWN
-        qual_pct = min(100, (input_values['OverallQual'] / 10) * 100)
-        area_pct = min(100, (input_values['GrLivArea'] / 3500) * 100)
-        garage_pct = min(100, (input_values['GarageCars'] / 4) * 100)
-        age_pct = min(100, ((input_values['YearBuilt'] - 1950) / 75) * 100)
-
-        render_html(f"""
-        <div class="light-card">
-            <div class="section-header">📊 Feature Impact & Relative Drivers</div>
+            st.write(f"**⭐ Construction Quality ({input_values['OverallQual']}/10)** - High Impact")
+            st.progress(qual_pct)
             
-            <div style="margin-bottom: 0.8rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155;">
-                    <span>⭐ Construction Quality ({input_values['OverallQual']}/10)</span>
-                    <span style="color: #2563EB;">High Impact</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {qual_pct}%; background-color: #2563EB;"></div>
-                </div>
-            </div>
+            st.write(f"**📐 Living Area ({input_values['GrLivArea']:,} sq ft)** - High Impact")
+            st.progress(area_pct)
+            
+            st.write(f"**🚗 Garage Capacity ({input_values['GarageCars']} Cars)** - Medium Impact")
+            st.progress(garage_pct)
 
-            <div style="margin-bottom: 0.8rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155;">
-                    <span>📐 Living Area ({input_values['GrLivArea']:,} sq ft)</span>
-                    <span style="color: #059669;">High Impact</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {area_pct}%; background-color: #059669;"></div>
-                </div>
-            </div>
+            st.write(f"**🏠 Modernity & Age (Built {input_values['YearBuilt']})** - Moderate Impact")
+            st.progress(age_pct)
 
-            <div style="margin-bottom: 0.8rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155;">
-                    <span>🚗 Garage Capacity ({input_values['GarageCars']} Cars)</span>
-                    <span style="color: #7C3AED;">Medium Impact</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {garage_pct}%; background-color: #7C3AED;"></div>
-                </div>
-            </div>
-
-            <div style="margin-bottom: 0.4rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155;">
-                    <span>🏠 Modernity & Age (Built {input_values['YearBuilt']})</span>
-                    <span style="color: #D97706;">Moderate Impact</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: {age_pct}%; background-color: #D97706;"></div>
-                </div>
-            </div>
-        </div>
-        """)
-
-        # QUICK PROPERTY SUMMARY GRID
-        render_html(f"""
-        <div class="light-card">
-            <div class="section-header">📋 Feature Summary Grid</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-                <div class="summary-card">
-                    <div class="summary-icon">⭐</div>
-                    <div>
-                        <div class="summary-title">Quality</div>
-                        <div class="summary-value">{input_values['OverallQual']} / 10</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-icon">📐</div>
-                    <div>
-                        <div class="summary-title">Living Area</div>
-                        <div class="summary-value">{input_values['GrLivArea']:,} sq ft</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-icon">🌿</div>
-                    <div>
-                        <div class="summary-title">Lot Area</div>
-                        <div class="summary-value">{input_values['LotArea']:,} sq ft</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-icon">🧱</div>
-                    <div>
-                        <div class="summary-title">Basement</div>
-                        <div class="summary-value">{input_values['TotalBsmtSF']:,} sq ft</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        """)
+        # QUICK PROPERTY SUMMARY GRID (Native Streamlit Metrics)
+        with st.container(border=True):
+            st.subheader("📋 Feature Summary Grid")
+            sg1, sg2 = st.columns(2)
+            with sg1:
+                st.metric("Overall Quality", f"{input_values['OverallQual']} / 10")
+                st.metric("Living Area", f"{input_values['GrLivArea']:,} sq ft")
+            with sg2:
+                st.metric("Lot Area", f"{input_values['LotArea']:,} sq ft")
+                st.metric("Basement Area", f"{input_values['TotalBsmtSF']:,} sq ft")
 
 elif st.session_state.get("current_page") == "compare":
     # -------------------------------------------------------------------------
     # PAGE 2: Compare Two Properties Side-by-Side
     # -------------------------------------------------------------------------
-    render_html("<div style='font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-bottom: 0.85rem;'>⚔️ Interactive Property Comparison Matrix</div>")
+    st.header("⚔️ Interactive Property Comparison Matrix")
     
     col_A, col_B = st.columns(2)
     
     # PROPERTY A INPUTS
     with col_A:
-        render_html("""
-        <div class="light-card" style="border-top: 4px solid #2563EB;">
-            <div style="font-size: 1.1rem; font-weight: 800; color: #2563EB; margin-bottom: 0.6rem;">🏠 Property A</div>
-        """)
-        
-        pa_c1, pa_c2, pa_c3 = st.columns(3)
-        with pa_c1:
-            if st.button("🪙 Budget", key="btn_PA_budget", use_container_width=True):
-                set_preset_compare("A", "Budget")
-                st.rerun()
-        with pa_c2:
-            if st.button("🏡 Family", key="btn_PA_family", use_container_width=True):
-                set_preset_compare("A", "Family")
-                st.rerun()
-        with pa_c3:
-            if st.button("🏰 Luxury", key="btn_PA_luxury", use_container_width=True):
-                set_preset_compare("A", "Luxury")
-                st.rerun()
-                
-        render_html("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>")
-        
-        val_A_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_A_OverallQual", 5)), key="key_A_OverallQual")
-        val_A_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_A_GrLivArea", 1500)), step=50, key="key_A_GrLivArea")
-        val_A_built = st.number_input("🏠 Year Built", 1800, 2025, value=int(st.session_state.get("key_A_YearBuilt", 2000)), key="key_A_YearBuilt")
-        val_A_bed = st.number_input("🛏️ Bedrooms", 1, 10, value=int(st.session_state.get("key_A_BedroomAbvGr", 3)), key="key_A_BedroomAbvGr")
-        val_A_bath = st.number_input("🚿 Full Bathrooms", 0, 5, value=int(st.session_state.get("key_A_FullBath", 2)), key="key_A_FullBath")
-        val_A_cars = st.number_input("🚗 Garage Capacity (Cars)", 0, 5, value=int(st.session_state.get("key_A_GarageCars", 2)), key="key_A_GarageCars")
-        val_A_lot = st.number_input("🌿 Lot Area (sq ft)", 1000, 250000, value=int(st.session_state.get("key_A_LotArea", 9000)), step=500, key="key_A_LotArea")
-        val_A_bsmt = st.number_input("🧱 Basement Area (sq ft)", 0, 4000, value=int(st.session_state.get("key_A_TotalBsmtSF", 1000)), step=50, key="key_A_TotalBsmtSF")
-        val_A_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_A_TotRmsAbvGrd", 6)), key="key_A_TotRmsAbvGrd")
-        val_A_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_A_Fireplaces", 1)), key="key_A_Fireplaces")
-        
-        render_html("</div>")
+        with st.container(border=True):
+            st.subheader("🏠 Property A")
+            
+            pa_c1, pa_c2, pa_c3 = st.columns(3)
+            with pa_c1:
+                if st.button("🪙 Budget", key="btn_PA_budget", use_container_width=True):
+                    set_preset_compare("A", "Budget")
+                    st.rerun()
+            with pa_c2:
+                if st.button("🏡 Family", key="btn_PA_family", use_container_width=True):
+                    set_preset_compare("A", "Family")
+                    st.rerun()
+            with pa_c3:
+                if st.button("🏰 Luxury", key="btn_PA_luxury", use_container_width=True):
+                    set_preset_compare("A", "Luxury")
+                    st.rerun()
+                    
+            val_A_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_A_OverallQual", 5)), key="key_A_OverallQual")
+            val_A_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_A_GrLivArea", 1500)), step=50, key="key_A_GrLivArea")
+            val_A_built = st.number_input("🏠 Year Built", 1800, 2025, value=int(st.session_state.get("key_A_YearBuilt", 2000)), key="key_A_YearBuilt")
+            val_A_bed = st.number_input("🛏️ Bedrooms", 1, 10, value=int(st.session_state.get("key_A_BedroomAbvGr", 3)), key="key_A_BedroomAbvGr")
+            val_A_bath = st.number_input("🚿 Full Bathrooms", 0, 5, value=int(st.session_state.get("key_A_FullBath", 2)), key="key_A_FullBath")
+            val_A_cars = st.number_input("🚗 Garage Capacity (Cars)", 0, 5, value=int(st.session_state.get("key_A_GarageCars", 2)), key="key_A_GarageCars")
+            val_A_lot = st.number_input("🌿 Lot Area (sq ft)", 1000, 250000, value=int(st.session_state.get("key_A_LotArea", 9000)), step=500, key="key_A_LotArea")
+            val_A_bsmt = st.number_input("🧱 Basement Area (sq ft)", 0, 4000, value=int(st.session_state.get("key_A_TotalBsmtSF", 1000)), step=50, key="key_A_TotalBsmtSF")
+            val_A_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_A_TotRmsAbvGrd", 6)), key="key_A_TotRmsAbvGrd")
+            val_A_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_A_Fireplaces", 1)), key="key_A_Fireplaces")
 
     # PROPERTY B INPUTS
     with col_B:
-        render_html("""
-        <div class="light-card" style="border-top: 4px solid #059669;">
-            <div style="font-size: 1.1rem; font-weight: 800; color: #059669; margin-bottom: 0.6rem;">🏡 Property B</div>
-        """)
-        
-        pb_c1, pb_c2, pb_c3 = st.columns(3)
-        with pb_c1:
-            if st.button("🪙 Budget", key="btn_PB_budget", use_container_width=True):
-                set_preset_compare("B", "Budget")
-                st.rerun()
-        with pb_c2:
-            if st.button("🏡 Family", key="btn_PB_family", use_container_width=True):
-                set_preset_compare("B", "Family")
-                st.rerun()
-        with pb_c3:
-            if st.button("🏰 Luxury", key="btn_PB_luxury", use_container_width=True):
-                set_preset_compare("B", "Luxury")
-                st.rerun()
-                
-        render_html("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>")
-        
-        val_B_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_B_OverallQual", 5)), key="key_B_OverallQual")
-        val_B_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_B_GrLivArea", 1500)), step=50, key="key_B_GrLivArea")
-        val_B_built = st.number_input("🏠 Year Built", 1800, 2025, value=int(st.session_state.get("key_B_YearBuilt", 2000)), key="key_B_YearBuilt")
-        val_B_bed = st.number_input("🛏️ Bedrooms", 1, 10, value=int(st.session_state.get("key_B_BedroomAbvGr", 3)), key="key_B_BedroomAbvGr")
-        val_B_bath = st.number_input("🚿 Full Bathrooms", 0, 5, value=int(st.session_state.get("key_B_FullBath", 2)), key="key_B_FullBath")
-        val_B_cars = st.number_input("🚗 Garage Capacity (Cars)", 0, 5, value=int(st.session_state.get("key_B_GarageCars", 2)), key="key_B_GarageCars")
-        val_B_lot = st.number_input("🌿 Lot Area (sq ft)", 1000, 250000, value=int(st.session_state.get("key_B_LotArea", 9000)), step=500, key="key_B_LotArea")
-        val_B_bsmt = st.number_input("🧱 Basement Area (sq ft)", 0, 4000, value=int(st.session_state.get("key_B_TotalBsmtSF", 1000)), step=50, key="key_B_TotalBsmtSF")
-        val_B_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_B_TotRmsAbvGrd", 6)), key="key_B_TotRmsAbvGrd")
-        val_B_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_B_Fireplaces", 1)), key="key_B_Fireplaces")
-        
-        render_html("</div>")
+        with st.container(border=True):
+            st.subheader("🏡 Property B")
+            
+            pb_c1, pb_c2, pb_c3 = st.columns(3)
+            with pb_c1:
+                if st.button("🪙 Budget", key="btn_PB_budget", use_container_width=True):
+                    set_preset_compare("B", "Budget")
+                    st.rerun()
+            with pb_c2:
+                if st.button("🏡 Family", key="btn_PB_family", use_container_width=True):
+                    set_preset_compare("B", "Family")
+                    st.rerun()
+            with pb_c3:
+                if st.button("🏰 Luxury", key="btn_PB_luxury", use_container_width=True):
+                    set_preset_compare("B", "Luxury")
+                    st.rerun()
+                    
+            val_B_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_B_OverallQual", 5)), key="key_B_OverallQual")
+            val_B_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_B_GrLivArea", 1500)), step=50, key="key_B_GrLivArea")
+            val_B_built = st.number_input("🏠 Year Built", 1800, 2025, value=int(st.session_state.get("key_B_YearBuilt", 2000)), key="key_B_YearBuilt")
+            val_B_bed = st.number_input("🛏️ Bedrooms", 1, 10, value=int(st.session_state.get("key_B_BedroomAbvGr", 3)), key="key_B_BedroomAbvGr")
+            val_B_bath = st.number_input("🚿 Full Bathrooms", 0, 5, value=int(st.session_state.get("key_B_FullBath", 2)), key="key_B_FullBath")
+            val_B_cars = st.number_input("🚗 Garage Capacity (Cars)", 0, 5, value=int(st.session_state.get("key_B_GarageCars", 2)), key="key_B_GarageCars")
+            val_B_lot = st.number_input("🌿 Lot Area (sq ft)", 1000, 250000, value=int(st.session_state.get("key_B_LotArea", 9000)), step=500, key="key_B_LotArea")
+            val_B_bsmt = st.number_input("🧱 Basement Area (sq ft)", 0, 4000, value=int(st.session_state.get("key_B_TotalBsmtSF", 1000)), step=50, key="key_B_TotalBsmtSF")
+            val_B_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_B_TotRmsAbvGrd", 6)), key="key_B_TotRmsAbvGrd")
+            val_B_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_B_Fireplaces", 1)), key="key_B_Fireplaces")
 
     # PREDICTION CALCULATIONS
     values_A = {
@@ -815,75 +645,36 @@ elif st.session_state.get("current_page") == "compare":
     pct_diff = (diff / pred_A * 100) if pred_A > 0 else 0
     
     # RESULTS BANNER
-    render_html("<div style='height: 0.5rem;'></div><div style='font-size: 1.15rem; font-weight: 800; color: #0F172A; margin-bottom: 0.6rem;'>📊 Valuation Comparison Results</div>")
+    st.subheader("📊 Valuation Comparison Results")
     
     res_c1, res_c2 = st.columns(2)
     with res_c1:
-        render_html(f"""
-        <div class="light-card" style="border: 2px solid #2563EB;">
-            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">🏠 Property A Valuation</div>
-            <div style="font-size: 2.4rem; font-weight: 800; color: #2563EB;">£{pred_A:,.2f}</div>
-            <div style="font-size: 0.85rem; color: #64748B; margin-top: 0.3rem;">Unit Price: <b>£{pred_A / values_A['GrLivArea']:,.2f} / sq ft</b></div>
-        </div>
-        """)
-        
+        st.metric("Property A Valuation", f"£{pred_A:,.2f}", f"£{pred_A / values_A['GrLivArea']:,.2f} / sq ft")
     with res_c2:
-        render_html(f"""
-        <div class="light-card" style="border: 2px solid #059669;">
-            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">🏡 Property B Valuation</div>
-            <div style="font-size: 2.4rem; font-weight: 800; color: #059669;">£{pred_B:,.2f}</div>
-            <div style="font-size: 0.85rem; color: #64748B; margin-top: 0.3rem;">Unit Price: <b>£{pred_B / values_B['GrLivArea']:,.2f} / sq ft</b></div>
-        </div>
-        """)
+        st.metric("Property B Valuation", f"£{pred_B:,.2f}", f"£{pred_B / values_B['GrLivArea']:,.2f} / sq ft")
 
     # Difference Summary Box
     if diff > 0:
-        diff_text = f"💡 <b>Property B</b> is valued at <b style='color: #059669;'>+£{diff:,.2f} (+{pct_diff:.1f}%) higher</b> than Property A."
-        diff_border = "#059669"
-        diff_bg = "#ECFDF5"
+        st.success(f"💡 **Property B** is valued at **+£{diff:,.2f} (+{pct_diff:.1f}%) higher** than Property A.")
     elif diff < 0:
-        diff_text = f"💡 <b>Property A</b> is valued at <b style='color: #2563EB;'>+£{abs(diff):,.2f} (+{abs(pct_diff):.1f}%) higher</b> than Property B."
-        diff_border = "#2563EB"
-        diff_bg = "#EFF6FF"
+        st.info(f"💡 **Property A** is valued at **+£{abs(diff):,.2f} (+{abs(pct_diff):.1f}%) higher** than Property B.")
     else:
-        diff_text = "💡 Both properties have equal predicted valuation."
-        diff_border = "#94A3B8"
-        diff_bg = "#F8FAFC"
-        
-    render_html(f"""
-    <div style="background: {diff_bg}; border: 1px solid {diff_border}; padding: 1rem 1.25rem; border-radius: 14px; font-size: 0.95rem; color: #0F172A; margin-bottom: 1.2rem;">
-        {diff_text}
-    </div>
-    """)
+        st.warning("💡 Both properties have equal predicted valuation.")
 
-    # FEATURE MATRIX TABLE
-    table_header = '<div class="light-card" style="padding: 1.4rem;"><div style="font-size: 1.05rem; font-weight: 800; color: #0F172A; margin-bottom: 1rem;">📋 Side-by-Side Feature Matrix</div><table style="width: 100%; border-collapse: collapse; font-size: 0.92rem;"><thead><tr style="border-bottom: 2px solid #E2E8F0; color: #64748B; text-align: left;"><th style="padding: 0.75rem 1rem; width: 35%;">Feature</th><th style="padding: 0.75rem 1rem; width: 25%; color: #2563EB;">Property A</th><th style="padding: 0.75rem 1rem; width: 25%; color: #059669;">Property B</th><th style="padding: 0.75rem 1rem; width: 15%; text-align: right;">Winner</th></tr></thead><tbody>'
+    # FEATURE MATRIX TABLE (Using Streamlit Dataframe / Table)
+    st.subheader("📋 Side-by-Side Feature Matrix")
     
     matrix_features = [
-        ("⭐ Overall Quality", val_A_qual, val_B_qual, "/ 10"),
-        ("📐 Living Area", f"{val_A_area:,}", f"{val_B_area:,}", "sq ft"),
-        ("🏠 Year Built", val_A_built, val_B_built, ""),
-        ("🛏️ Bedrooms", val_A_bed, val_B_bed, "Beds"),
-        ("🚿 Full Bathrooms", val_A_bath, val_B_bath, "Baths"),
-        ("🚗 Garage Capacity", val_A_cars, val_B_cars, "Cars"),
-        ("🌿 Lot Area", f"{val_A_lot:,}", f"{val_B_lot:,}", "sq ft"),
-        ("🧱 Basement Area", f"{val_A_bsmt:,}", f"{val_B_bsmt:,}", "sq ft"),
-        ("🚪 Total Rooms", val_A_rooms, val_B_rooms, "Rooms"),
-        ("🔥 Fireplaces", val_A_fire, val_B_fire, "Fireplaces"),
+        {"Feature": "⭐ Overall Quality", "Property A": f"{val_A_qual} / 10", "Property B": f"{val_B_qual} / 10", "Comparison": "Property B Higher" if val_B_qual > val_A_qual else ("Property A Higher" if val_A_qual > val_B_qual else "Equal")},
+        {"Feature": "📐 Living Area", "Property A": f"{val_A_area:,} sq ft", "Property B": f"{val_B_area:,} sq ft", "Comparison": "Property B Higher" if val_B_area > val_A_area else ("Property A Higher" if val_A_area > val_B_area else "Equal")},
+        {"Feature": "🏠 Year Built", "Property A": str(val_A_built), "Property B": str(val_B_built), "Comparison": "Property B Newer" if val_B_built > val_A_built else ("Property A Newer" if val_A_built > val_B_built else "Equal")},
+        {"Feature": "🛏️ Bedrooms", "Property A": str(val_A_bed), "Property B": str(val_B_bed), "Comparison": "Property B Higher" if val_B_bed > val_A_bed else ("Property A Higher" if val_A_bed > val_B_bed else "Equal")},
+        {"Feature": "🚿 Full Bathrooms", "Property A": str(val_A_bath), "Property B": str(val_B_bath), "Comparison": "Property B Higher" if val_B_bath > val_A_bath else ("Property A Higher" if val_A_bath > val_B_bath else "Equal")},
+        {"Feature": "🚗 Garage Capacity", "Property A": f"{val_A_cars} Cars", "Property B": f"{val_B_cars} Cars", "Comparison": "Property B Higher" if val_B_cars > val_A_cars else ("Property A Higher" if val_A_cars > val_B_cars else "Equal")},
+        {"Feature": "🌿 Lot Area", "Property A": f"{val_A_lot:,} sq ft", "Property B": f"{val_B_lot:,} sq ft", "Comparison": "Property B Higher" if val_B_lot > val_A_lot else ("Property A Higher" if val_A_lot > val_B_lot else "Equal")},
+        {"Feature": "🧱 Basement Area", "Property A": f"{val_A_bsmt:,} sq ft", "Property B": f"{val_B_bsmt:,} sq ft", "Comparison": "Property B Higher" if val_B_bsmt > val_A_bsmt else ("Property A Higher" if val_A_bsmt > val_B_bsmt else "Equal")},
+        {"Feature": "🚪 Total Rooms", "Property A": str(val_A_rooms), "Property B": str(val_B_rooms), "Comparison": "Property B Higher" if val_B_rooms > val_A_rooms else ("Property A Higher" if val_A_rooms > val_B_rooms else "Equal")},
+        {"Feature": "🔥 Fireplaces", "Property A": str(val_A_fire), "Property B": str(val_B_fire), "Comparison": "Property B Higher" if val_B_fire > val_A_fire else ("Property A Higher" if val_A_fire > val_B_fire else "Equal")},
     ]
     
-    rows_html = ""
-    for label, valA, valB, unit in matrix_features:
-        numA = float(str(valA).replace(',', ''))
-        numB = float(str(valB).replace(',', ''))
-        if numA > numB:
-            comp_badge = "<span style='background: rgba(37, 99, 235, 0.12); color: #2563EB; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;'>A is Higher</span>"
-        elif numB > numA:
-            comp_badge = "<span style='background: rgba(5, 150, 105, 0.12); color: #059669; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;'>B is Higher</span>"
-        else:
-            comp_badge = "<span style='background: #F1F5F9; color: #64748B; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 600; font-size: 0.75rem;'>Equal</span>"
-            
-        rows_html += f"<tr style='border-bottom: 1px solid #F1F5F9;'><td style='padding: 0.75rem 1rem; color: #0F172A; font-weight: 600;'>{label}</td><td style='padding: 0.75rem 1rem; color: #475569;'>{valA} {unit}</td><td style='padding: 0.75rem 1rem; color: #475569;'>{valB} {unit}</td><td style='padding: 0.75rem 1rem; text-align: right;'>{comp_badge}</td></tr>"
-        
-    full_table_html = table_header + rows_html + "</tbody></table></div>"
-    render_html(full_table_html)
+    st.table(pd.DataFrame(matrix_features))
