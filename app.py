@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import random
+import textwrap
 
 # -----------------------------------------------------------------------------
 # Page Configuration
@@ -12,6 +13,12 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# -----------------------------------------------------------------------------
+# Helper function to render unindented HTML
+# -----------------------------------------------------------------------------
+def render_html(html_str):
+    st.markdown(textwrap.dedent(html_str), unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # Baseline Defaults & Presets
@@ -91,10 +98,10 @@ PRESETS = {
 }
 
 # -----------------------------------------------------------------------------
-# Modern Sleek Light Theme CSS (Not Too Dark & Ultra Interactive)
+# Modern Sleek Light Theme CSS
 # -----------------------------------------------------------------------------
 def apply_modern_theme_css():
-    st.markdown("""
+    render_html("""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
@@ -116,15 +123,15 @@ def apply_modern_theme_css():
         }
         
         .block-container {
-            padding-top: 1.25rem !important;
-            padding-bottom: 2.5rem !important;
+            padding-top: 1rem !important;
+            padding-bottom: 2rem !important;
             max-width: 100% !important;
         }
         
         /* Top SaaS Header */
         .saas-top-bar {
             background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #2563EB 100%);
-            padding: 1.4rem 1.8rem;
+            padding: 1.25rem 1.6rem;
             border-radius: 16px;
             box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
             margin-bottom: 1.2rem;
@@ -135,7 +142,7 @@ def apply_modern_theme_css():
             gap: 1rem;
         }
         .hero-title {
-            font-size: 1.75rem;
+            font-size: 1.65rem;
             font-weight: 800;
             color: #FFFFFF;
             margin: 0;
@@ -145,7 +152,7 @@ def apply_modern_theme_css():
             gap: 0.6rem;
         }
         .hero-subtitle {
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: #94A3B8;
             margin-top: 0.2rem;
         }
@@ -185,7 +192,7 @@ def apply_modern_theme_css():
             background: #FFFFFF;
             border: 1px solid #E2E8F0;
             border-radius: 16px;
-            padding: 1.4rem;
+            padding: 1.3rem 1.4rem;
             box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
             margin-bottom: 1.2rem;
             transition: all 0.25s ease;
@@ -206,21 +213,19 @@ def apply_modern_theme_css():
             gap: 0.5rem;
         }
 
-        /* Prediction Glow Card (Light / Sleek Gradient) */
+        /* Prediction Glow Card */
         .prediction-hero-card {
             background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
             border-radius: 18px;
-            padding: 1.6rem 1.8rem;
+            padding: 1.5rem 1.7rem;
             border: 2px solid #2563EB;
-            box-shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.18), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
+            box-shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.15), 0 4px 6px -2px rgba(15, 23, 42, 0.05);
             margin-bottom: 1.2rem;
         }
         .prediction-price {
-            font-size: 3.2rem;
+            font-size: 3rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #1E293B 0%, #2563EB 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #2563EB;
             margin: 0.2rem 0;
             line-height: 1.1;
         }
@@ -230,10 +235,10 @@ def apply_modern_theme_css():
             background: #F8FAFC;
             border: 1px solid #E2E8F0;
             border-radius: 12px;
-            padding: 0.9rem 1.1rem;
+            padding: 0.85rem 1rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.9rem;
             transition: all 0.2s ease;
         }
         .summary-card:hover {
@@ -243,10 +248,10 @@ def apply_modern_theme_css():
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
         .summary-icon {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             background: rgba(37, 99, 235, 0.1);
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -254,14 +259,14 @@ def apply_modern_theme_css():
             color: #2563EB;
         }
         .summary-title {
-            font-size: 0.75rem;
+            font-size: 0.725rem;
             color: #64748B;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
         .summary-value {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: #0F172A;
         }
@@ -297,32 +302,13 @@ def apply_modern_theme_css():
             transform: translateY(-2px);
         }
 
-        /* Custom Labels & Interactive Elements */
+        /* Custom Labels & Elements */
         label {
             color: #334155 !important;
             font-size: 0.85rem !important;
             font-weight: 600 !important;
         }
 
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.65rem 0;
-            border-bottom: 1px solid #E2E8F0;
-            font-size: 0.875rem;
-        }
-        .info-row:last-child {
-            border-bottom: none;
-        }
-        .info-label {
-            color: #64748B;
-            font-weight: 500;
-        }
-        .info-val {
-            color: #0F172A;
-            font-weight: 700;
-        }
-        
         /* Metric Progress Bar */
         .progress-bar-bg {
             background-color: #E2E8F0;
@@ -338,7 +324,7 @@ def apply_modern_theme_css():
             transition: width 0.4s ease;
         }
     </style>
-    """, unsafe_allow_html=True)
+    """)
 
 # -----------------------------------------------------------------------------
 # Asset Loading (Machine Learning Model)
@@ -456,7 +442,7 @@ predicted_price = predict_property(input_values, model, columns)
 price_per_sqft = predicted_price / input_values["GrLivArea"] if input_values["GrLivArea"] > 0 else 0
 property_grade, grade_color = get_property_grade(input_values["OverallQual"])
 
-# Interactive Financial Estimates
+# Financial Estimates
 lower_estimate = predicted_price * 0.95
 upper_estimate = predicted_price * 1.05
 est_mortgage = (predicted_price * 0.80 * (0.065/12) * ((1 + 0.065/12)**360)) / (((1 + 0.065/12)**360) - 1)
@@ -464,7 +450,7 @@ est_mortgage = (predicted_price * 0.80 * (0.065/12) * ((1 + 0.065/12)**360)) / (
 # -----------------------------------------------------------------------------
 # Hero Header
 # -----------------------------------------------------------------------------
-st.markdown("""
+render_html("""
 <div class="saas-top-bar">
     <div>
         <div class="hero-title">🏠 House Price Valuation AI</div>
@@ -475,10 +461,10 @@ st.markdown("""
         <span class="meta-badge">Ames Dataset</span>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # -----------------------------------------------------------------------------
-# Top Interactive Navigation Bar
+# Navigation Bar
 # -----------------------------------------------------------------------------
 nav_col1, nav_col2 = st.columns(2)
 with nav_col1:
@@ -490,17 +476,15 @@ with nav_col2:
         st.session_state["current_page"] = "compare"
         st.rerun()
 
-st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
+render_html("<div style='height: 0.5rem;'></div>")
 
 # -----------------------------------------------------------------------------
 # Multi-Page Navigation Logic
 # -----------------------------------------------------------------------------
 if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
     
-    # -------------------------------------------------------------------------
     # Quick Preset Bar
-    # -------------------------------------------------------------------------
-    st.markdown("<div style='font-size: 0.8rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 0.4rem;'>⚡ Quick Property Presets</div>", unsafe_allow_html=True)
+    render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 0.4rem;'>⚡ Quick Property Presets</div>")
     
     btn_c1, btn_c2, btn_c3, btn_c4, btn_c5 = st.columns(5)
     with btn_c1:
@@ -524,16 +508,16 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
             reset_inputs()
             st.rerun()
 
-    st.markdown("<hr style='border-color: #E2E8F0; margin: 0.85rem 0;'>", unsafe_allow_html=True)
+    render_html("<hr style='border-color: #E2E8F0; margin: 0.85rem 0;'>")
 
-    # 2 Column Interactive Workspace (Left: Interactive Inputs | Right: Real-time Live Prediction & Analysis)
+    # 2 Column Interactive Workspace
     in_col1, in_col2 = st.columns([0.55, 0.45])
 
     with in_col1:
-        st.markdown("""
+        render_html("""
         <div class="light-card">
             <div class="section-header">🏗️ Quality & Built Specifications</div>
-        """, unsafe_allow_html=True)
+        """)
         
         st.slider("⭐ Overall Quality (1-10)", 1, 10, key="key_OverallQual", help="Rates overall material and finish quality")
         st.slider("🏚️ Overall Condition (1-10)", 1, 10, key="key_OverallCond", help="Rates overall condition of property")
@@ -544,8 +528,7 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
         with ic2:
             st.number_input("🔨 Year Remodeled", 1800, 2025, key="key_YearRemodAdd")
         
-        st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>📏 Dimensions & Square Footage</div>", unsafe_allow_html=True)
+        render_html("<div style='height: 0.5rem;'></div><div class='section-header'>📏 Dimensions & Square Footage</div>")
         
         dc1, dc2 = st.columns(2)
         with dc1:
@@ -559,8 +542,7 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
             st.number_input("🏢 Second Floor Area", 0, 3000, step=50, key="key_2ndFlrSF")
             st.number_input("🌤️ Open Porch Area", 0, 1000, step=25, key="key_OpenPorchSF")
 
-        st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-        st.markdown("<div class='section-header'>🛏️ Rooms, Bathrooms & Amenities</div>", unsafe_allow_html=True)
+        render_html("<div style='height: 0.5rem;'></div><div class='section-header'>🛏️ Rooms, Bathrooms & Amenities</div>")
         
         rc1, rc2 = st.columns(2)
         with rc1:
@@ -574,11 +556,11 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
             st.number_input("🔥 Fireplaces", 0, 4, key="key_Fireplaces")
             st.number_input("🚘 Garage Area (sq ft)", 0, 2000, step=50, key="key_GarageArea")
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        render_html("</div>")
 
     with in_col2:
         # REAL-TIME LIVE PREDICTION DISPLAY
-        st.markdown(f"""
+        render_html(f"""
         <div class="prediction-hero-card">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
@@ -606,15 +588,15 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
                 </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
-        # INTERACTIVE FEATURE IMPORTANCE & VALUE BREAKDOWN
+        # FEATURE IMPORTANCE & VALUE BREAKDOWN
         qual_pct = min(100, (input_values['OverallQual'] / 10) * 100)
         area_pct = min(100, (input_values['GrLivArea'] / 3500) * 100)
         garage_pct = min(100, (input_values['GarageCars'] / 4) * 100)
         age_pct = min(100, ((input_values['YearBuilt'] - 1950) / 75) * 100)
 
-        st.markdown(f"""
+        render_html(f"""
         <div class="light-card">
             <div class="section-header">📊 Feature Impact & Relative Drivers</div>
             
@@ -658,10 +640,10 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
                 </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         # QUICK PROPERTY SUMMARY GRID
-        st.markdown(f"""
+        render_html(f"""
         <div class="light-card">
             <div class="section-header">📋 Feature Summary Grid</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
@@ -695,22 +677,22 @@ if st.session_state.get("current_page", "inputs") in ["inputs", "results"]:
                 </div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 elif st.session_state.get("current_page") == "compare":
     # -------------------------------------------------------------------------
     # PAGE 2: Compare Two Properties Side-by-Side
     # -------------------------------------------------------------------------
-    st.markdown("<div style='font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-bottom: 0.85rem;'>⚔️ Interactive Property Comparison Matrix</div>", unsafe_allow_html=True)
+    render_html("<div style='font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-bottom: 0.85rem;'>⚔️ Interactive Property Comparison Matrix</div>")
     
     col_A, col_B = st.columns(2)
     
     # PROPERTY A INPUTS
     with col_A:
-        st.markdown("""
+        render_html("""
         <div class="light-card" style="border-top: 4px solid #2563EB;">
             <div style="font-size: 1.1rem; font-weight: 800; color: #2563EB; margin-bottom: 0.6rem;">🏠 Property A</div>
-        """, unsafe_allow_html=True)
+        """)
         
         pa_c1, pa_c2, pa_c3 = st.columns(3)
         with pa_c1:
@@ -726,7 +708,7 @@ elif st.session_state.get("current_page") == "compare":
                 set_preset_compare("A", "Luxury")
                 st.rerun()
                 
-        st.markdown("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>", unsafe_allow_html=True)
+        render_html("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>")
         
         val_A_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_A_OverallQual", 5)), key="key_A_OverallQual")
         val_A_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_A_GrLivArea", 1500)), step=50, key="key_A_GrLivArea")
@@ -739,14 +721,14 @@ elif st.session_state.get("current_page") == "compare":
         val_A_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_A_TotRmsAbvGrd", 6)), key="key_A_TotRmsAbvGrd")
         val_A_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_A_Fireplaces", 1)), key="key_A_Fireplaces")
         
-        st.markdown("</div>", unsafe_allow_html=True)
+        render_html("</div>")
 
     # PROPERTY B INPUTS
     with col_B:
-        st.markdown("""
+        render_html("""
         <div class="light-card" style="border-top: 4px solid #059669;">
             <div style="font-size: 1.1rem; font-weight: 800; color: #059669; margin-bottom: 0.6rem;">🏡 Property B</div>
-        """, unsafe_allow_html=True)
+        """)
         
         pb_c1, pb_c2, pb_c3 = st.columns(3)
         with pb_c1:
@@ -762,7 +744,7 @@ elif st.session_state.get("current_page") == "compare":
                 set_preset_compare("B", "Luxury")
                 st.rerun()
                 
-        st.markdown("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>", unsafe_allow_html=True)
+        render_html("<hr style='border-color: #E2E8F0; margin: 0.6rem 0;'>")
         
         val_B_qual = st.slider("⭐ Overall Quality", 1, 10, value=int(st.session_state.get("key_B_OverallQual", 5)), key="key_B_OverallQual")
         val_B_area = st.number_input("📐 Living Area (sq ft)", 300, 6000, value=int(st.session_state.get("key_B_GrLivArea", 1500)), step=50, key="key_B_GrLivArea")
@@ -775,7 +757,7 @@ elif st.session_state.get("current_page") == "compare":
         val_B_rooms = st.number_input("🚪 Total Rooms", 2, 15, value=int(st.session_state.get("key_B_TotRmsAbvGrd", 6)), key="key_B_TotRmsAbvGrd")
         val_B_fire = st.number_input("🔥 Fireplaces", 0, 4, value=int(st.session_state.get("key_B_Fireplaces", 1)), key="key_B_Fireplaces")
         
-        st.markdown("</div>", unsafe_allow_html=True)
+        render_html("</div>")
 
     # PREDICTION CALCULATIONS
     values_A = {
@@ -833,27 +815,26 @@ elif st.session_state.get("current_page") == "compare":
     pct_diff = (diff / pred_A * 100) if pred_A > 0 else 0
     
     # RESULTS BANNER
-    st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-    st.markdown("<div style='font-size: 1.15rem; font-weight: 800; color: #0F172A; margin-bottom: 0.6rem;'>📊 Valuation Comparison Results</div>", unsafe_allow_html=True)
+    render_html("<div style='height: 0.5rem;'></div><div style='font-size: 1.15rem; font-weight: 800; color: #0F172A; margin-bottom: 0.6rem;'>📊 Valuation Comparison Results</div>")
     
     res_c1, res_c2 = st.columns(2)
     with res_c1:
-        st.markdown(f"""
+        render_html(f"""
         <div class="light-card" style="border: 2px solid #2563EB;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">🏠 Property A Valuation</div>
             <div style="font-size: 2.4rem; font-weight: 800; color: #2563EB;">£{pred_A:,.2f}</div>
             <div style="font-size: 0.85rem; color: #64748B; margin-top: 0.3rem;">Unit Price: <b>£{pred_A / values_A['GrLivArea']:,.2f} / sq ft</b></div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
     with res_c2:
-        st.markdown(f"""
+        render_html(f"""
         <div class="light-card" style="border: 2px solid #059669;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">🏡 Property B Valuation</div>
             <div style="font-size: 2.4rem; font-weight: 800; color: #059669;">£{pred_B:,.2f}</div>
             <div style="font-size: 0.85rem; color: #64748B; margin-top: 0.3rem;">Unit Price: <b>£{pred_B / values_B['GrLivArea']:,.2f} / sq ft</b></div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     # Difference Summary Box
     if diff > 0:
@@ -869,11 +850,11 @@ elif st.session_state.get("current_page") == "compare":
         diff_border = "#94A3B8"
         diff_bg = "#F8FAFC"
         
-    st.markdown(f"""
+    render_html(f"""
     <div style="background: {diff_bg}; border: 1px solid {diff_border}; padding: 1rem 1.25rem; border-radius: 14px; font-size: 0.95rem; color: #0F172A; margin-bottom: 1.2rem;">
         {diff_text}
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # FEATURE MATRIX TABLE
     table_header = '<div class="light-card" style="padding: 1.4rem;"><div style="font-size: 1.05rem; font-weight: 800; color: #0F172A; margin-bottom: 1rem;">📋 Side-by-Side Feature Matrix</div><table style="width: 100%; border-collapse: collapse; font-size: 0.92rem;"><thead><tr style="border-bottom: 2px solid #E2E8F0; color: #64748B; text-align: left;"><th style="padding: 0.75rem 1rem; width: 35%;">Feature</th><th style="padding: 0.75rem 1rem; width: 25%; color: #2563EB;">Property A</th><th style="padding: 0.75rem 1rem; width: 25%; color: #059669;">Property B</th><th style="padding: 0.75rem 1rem; width: 15%; text-align: right;">Winner</th></tr></thead><tbody>'
@@ -905,4 +886,4 @@ elif st.session_state.get("current_page") == "compare":
         rows_html += f"<tr style='border-bottom: 1px solid #F1F5F9;'><td style='padding: 0.75rem 1rem; color: #0F172A; font-weight: 600;'>{label}</td><td style='padding: 0.75rem 1rem; color: #475569;'>{valA} {unit}</td><td style='padding: 0.75rem 1rem; color: #475569;'>{valB} {unit}</td><td style='padding: 0.75rem 1rem; text-align: right;'>{comp_badge}</td></tr>"
         
     full_table_html = table_header + rows_html + "</tbody></table></div>"
-    st.markdown(full_table_html, unsafe_allow_html=True)
+    render_html(full_table_html)
